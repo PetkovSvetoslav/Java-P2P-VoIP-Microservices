@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" lang="en">
+<head>
+<!--  <th:block th:replace="~{fragments/head}"></th:block>-->
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+
+  <link rel="stylesheet" href="../static/css/styles.css" type="text/css"  >
+  <title>P2P Chat</title>
+</head>
+
+<body>
+<main role="main">
+  <div id="contacts">
+    <div class="contact" data-id="1">Contact 1</div>
+    <div class="contact" data-id="2">Contact 2</div>
+    <!-- Add more contacts as needed -->
+  </div>
+  <br>
+<form id="message-form">
+  <input type="text" id="message-input" placeholder="Type your message here...">
+  <button type="submit" id="send">Send</button>
+</form>
+  <div id="chat-box" style="height: 300px; overflow: auto; border: 1px solid black; padding: 10px;">
+    <!-- Messages will be added here dynamically -->
+  </div>
+
+  <br>
+  <audio id="remoteAudio" controls autoplay></audio>
+  <br>
+<button id="start-button">Start Call</button>
+<button id="end-button">End Call</button>
+<button id="mute-button">Mute</button>
+<button id="unmute-button">Unmute</button>
+</main>
+
+<script src="../static/js/signalingService.js" type="text/javascript"></script>
+<script src="../static/js/callService.js" type="text/javascript"></script>
+<script src="../static/js/main.js" type="text/javascript"></script>
+<script src="../static/js/message.js" type="text/javascript"></script>
+
+</body>
+</html>
