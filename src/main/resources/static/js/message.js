@@ -31,8 +31,29 @@ socket.onmessage = function(event) {
     addMessageToChat(message.content, message.timestamp);
 };
 
-var loggedInUserId = 1;
-var selectedContactId = 2;
+var loggedInUserId;
+var selectedContactId;
+
+function getCurrentUserId() {
+    return fetch('/api/users/current')
+        .then(response => response.json())
+        .then(user => user.id);
+}
+
+function getSelectedContactId() {
+    return fetch('/api/users/selected')
+        .then(response => response.json())
+        .then(user => user.id);
+}
+
+getCurrentUserId().then(userId => {
+    loggedInUserId = userId;
+});
+
+getSelectedContactId().then(contactId => {
+    selectedContactId = contactId;
+});
+
 
 document.getElementById('message-form').addEventListener('submit', function(event) {
     event.preventDefault();

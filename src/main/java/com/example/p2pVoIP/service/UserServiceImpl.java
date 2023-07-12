@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
 @Service
 public class UserServiceImpl implements UserService{
 
@@ -16,12 +15,10 @@ public class UserServiceImpl implements UserService{
 
     private final BCryptPasswordEncoder passwordEncoder;
 
-
     public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
-
 
     public User createUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -54,4 +51,9 @@ public class UserServiceImpl implements UserService{
             throw new RuntimeException("User with id " + id + " does not exist");
         }
     }
+
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
 }
+

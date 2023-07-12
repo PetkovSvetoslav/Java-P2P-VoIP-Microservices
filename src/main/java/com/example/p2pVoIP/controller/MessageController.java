@@ -36,7 +36,6 @@ public class MessageController {
     @MessageMapping("/send")
     @SendTo("/topic/messages")
     public Message send(Message message) throws Exception {
-        return message;
+        return messageServiceImpl.saveMessage(message);
     }
-
 }

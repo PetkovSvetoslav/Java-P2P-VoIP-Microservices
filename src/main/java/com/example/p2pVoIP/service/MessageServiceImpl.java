@@ -23,11 +23,10 @@ public class MessageServiceImpl implements  MessageService{
     public List<Message> getMessagesByReceiverId(Long receiverId) {
         return messageRepository.findByReceiverId(receiverId);
     }
+
     @Transactional
     public Message saveMessage(Message message) {
         message.setTimestamp(LocalDateTime.now());
         return messageRepository.save(message);
     }
-
-
 }
