@@ -53,8 +53,7 @@ public class UserController {
     }
 
     @GetMapping("/current")
-    public ResponseEntity<User> getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public ResponseEntity<User> getCurrentUser(Authentication authentication) {
         String currentUserName = authentication.getName();
         User currentUser = userServiceImpl.findByUsername(currentUserName)
                 .orElseThrow(() -> new RuntimeException("User with username " + currentUserName + " not found"));
@@ -62,10 +61,11 @@ public class UserController {
     }
 
     @GetMapping("/selected")
-    public ResponseEntity<User> getSelectedUser(HttpSession session) {
-        Long selectedUserId = (Long) session.getAttribute("selectedUserId");
+    public ResponseEntity<User> getSelectedUser(@RequestParam Long selectedUserId) {
         User selectedUser = userServiceImpl.getUserById(selectedUserId)
                 .orElseThrow(() -> new RuntimeException("User with id " + selectedUserId + " not found"));
         return ResponseEntity.ok(selectedUser);
     }
+
+
 }

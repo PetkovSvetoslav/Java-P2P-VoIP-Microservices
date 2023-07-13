@@ -10,8 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-//@EnableWebMvc
 @SpringBootApplication
 public class P2pVoIpApplication implements WebMvcConfigurer {
 	public static void main(String[] args) {

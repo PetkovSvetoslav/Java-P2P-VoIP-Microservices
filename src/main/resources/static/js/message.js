@@ -1,7 +1,7 @@
 var socket = new WebSocket('ws://localhost:8080/messages');
 
 function fetchMessages() {
-    fetch('/messages/1/2')
+    fetch('/messages/sender/' + loggedInUserId + '/receiver/' + selectedContactId)
         .then(response => response.json())
         .then(messages => {
             var chatBox = document.getElementById('chat-box');
@@ -12,8 +12,6 @@ function fetchMessages() {
             });
         });
 }
-
-setInterval(fetchMessages, 1000);
 
 function addMessageToChat(message, timestamp) {
     var chatBox = document.getElementById('chat-box');
@@ -36,14 +34,26 @@ var selectedContactId;
 
 function getCurrentUserId() {
     return fetch('/api/users/current')
-        .then(response => response.json())
-        .then(user => user.id);
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(user => user.id)
+        .catch(error => console.log('Error fetching current user:', error));
 }
 
 function getSelectedContactId() {
     return fetch('/api/users/selected')
-        .then(response => response.json())
-        .then(user => user.id);
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(user => user.id)
+        .catch(error => console.log('Error fetching selected contact:', error));
 }
 
 getCurrentUserId().then(userId => {
@@ -54,6 +64,15 @@ getSelectedContactId().then(contactId => {
     selectedContactId = contactId;
 });
 
+Promise.all([getCurrentUserId(), getSelectedContactId()])
+    .then(([userId, contactId]) => {
+        loggedInUserId = userId;
+        selectedContactId = contactId;
+        setInterval(fetchMessages, 1000);
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
 
 document.getElementById('message-form').addEventListener('submit', function(event) {
     event.preventDefault();
@@ -74,7 +93,12 @@ document.getElementById('message-form').addEventListener('submit', function(even
                 receiverId: selectedContactId,
             }),
         })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 addMessageToChat(message, data.timestamp);
                 messageInput.value = '';
@@ -84,6 +108,7 @@ document.getElementById('message-form').addEventListener('submit', function(even
             });
     }
 });
+
 
 function openConversation(senderId, receiverId) {
     var chatBox = document.getElementById('chat-box');
@@ -128,7 +153,9 @@ socket.onerror = function(error) {
 
 function sendMessage(content) {
     var message = {
-        content: content
+        content: content,
+        senderId: loggedInUserId,
+        receiverId: selectedContactId,
     };
     socket.send(JSON.stringify(message));
 }
